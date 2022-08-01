@@ -1,31 +1,46 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [imgAndCommen, setImgAndCommen] = useState([])
+  
+  
+  useEffect(() => {
+    fetch(`http://localhost:3000/images?_embed=comments`)
+      .then(response => response.json())
+      .then(imagesFromServer => setImgAndCommen(imagesFromServer))
+  }, [])
+   function incrementLike(image) {
+    const copyImgAndCommen = structuredClone(imgAndCommen)
+    const match = copyImgAndCommen.find(target => target.id === image.id);
+    match.likes++
+    console.log(match.likes)
+    setImgAndCommen([...copyImgAndCommen])
+  }
 
   return (
     <div className="App">
      <img className="logo" src="assets/hoxtagram-logo.png" />
-
-
-<section className="image-container">
+    <section className="image-container">
+      {imgAndCommen.map(image => (
+        <article className="image-card">
+        <h2 className="title">{image.title}</h2>
+        <img src={image.image} className="image" />
+        <div className="likes-section">
+          <span className="likes">{image.likes}</span>
+          <button className="like-button" onClick={
+            ()=>incrementLike(image)}>♥</button>
+        </div>
+        <ul className="comments">
+         {image.comments.map(comment => (
+          <li className="comment"> {comment.content} </li>
+        ))}
+        </ul>
+      </article>
  
-
-  <article className="image-card">
-    <h2 className="title">Title of image goes here</h2>
-    <img src="./assets/image-placeholder.jpg" className="image" />
-    <div className="likes-section">
-      <span className="likes">0 likes</span>
-      <button className="like-button">♥</button>
-    </div>
-    <ul className="comments">
-      <li>Get rid of these comments</li>
-      <li>And replace them with the real ones</li>
-      <li>From the server</li>
-    </ul>
-  </article>
+      ))}
+    
 </section>
     </div>
   )
