@@ -11,6 +11,13 @@
       "title": "Coder cats",
       "likes": 8,
       "image": "./assets/coder-cat.jpeg"
+    },
+    {
+      "title": "Cute dog",
+      "likes": 2,
+      "image": "https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
+      "comments": [],
+      "id": 3
     }
   ],
   "comments": [

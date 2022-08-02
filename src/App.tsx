@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import { Header } from './components/Header'
 import { SingleCard } from './components/SingleCard'
+import { NewPost } from './NewPost'
  
 type Comment={
   id:number;
@@ -15,7 +16,7 @@ export type Image = {
     title: string;
     likes: number;
     image: string;
-    comments: Comment[];
+    comments?: Comment[];
 }
 
 function App() {
@@ -44,9 +45,33 @@ function App() {
     setImgAndCommen(copyImgAndCommen) 
 }
 
+function createNewPost(title:String,image:String){
+  let newPost={
+    "title": title,
+    "likes": 0,
+    "image": image,
+    "comments":[]
+  }
+
+  fetch(`http://localhost:3000/images`,{
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+      },
+    body: JSON.stringify(newPost)
+  })
+    .then(resp => resp.json())
+    .then(newPost => {
+      setImgAndCommen([...imgAndCommen, newPost])
+    })
+
+  }
+
   return (
     <div className="App">
      <Header/>
+     <NewPost
+     createNewPost={createNewPost}/>
       <SingleCard
       imgAndCommen={ imgAndCommen}
       incrementLike={incrementLike}

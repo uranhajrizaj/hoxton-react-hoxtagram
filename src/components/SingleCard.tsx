@@ -1,6 +1,7 @@
 import { CardComments } from "./card-components/CardComments";
 import { LikeButton } from "./card-components/LikeButton";
  import { Image } from "../App";
+import { NewComment } from "./card-components/NewComment";
  
  type Props={
     imgAndCommen: Image[];
@@ -9,10 +10,12 @@ import { LikeButton } from "./card-components/LikeButton";
 
 export function SingleCard({
     imgAndCommen,
-    incrementLike
+    incrementLike,
+
 }: Props) {
     return(
         <section className="image-container">
+        
       {imgAndCommen.map((image:Image) => (
         <article className="image-card">
        <h2 className="title">{image.title}</h2>
@@ -23,9 +26,9 @@ export function SingleCard({
         />
         <CardComments image={image}/>
       </article>
- 
       ))}
     
+      
 </section>
     )
 }
