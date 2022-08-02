@@ -1,47 +1,56 @@
 import { useEffect, useState } from 'react'
 
 import './App.css'
+import { Header } from './components/Header'
+import { SingleCard } from './components/SingleCard'
+ 
+type Comment={
+  id:number;
+  content:string;
+  imageId:number;
+}
+
+export type Image = {
+     id: number;
+    title: string;
+    likes: number;
+    image: string;
+    comments: Comment[];
+}
 
 function App() {
   const [imgAndCommen, setImgAndCommen] = useState([])
-  
   
   useEffect(() => {
     fetch(`http://localhost:3000/images?_embed=comments`)
       .then(response => response.json())
       .then(imagesFromServer => setImgAndCommen(imagesFromServer))
   }, [])
-   function incrementLike(image) {
+
+   function incrementLike(image: Image) {
     const copyImgAndCommen = structuredClone(imgAndCommen)
-    const match = copyImgAndCommen.find(target => target.id === image.id);
+    const match = copyImgAndCommen.find((target: { id: number }) => target.id === image.id);
     match.likes++
     console.log(match.likes)
-    setImgAndCommen([...copyImgAndCommen])
-  }
+    console.log(match)
+
+    fetch(`http://localhost:3000/images/${match.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+        },
+      body: JSON.stringify({likes: match.likes})
+  })
+    setImgAndCommen(copyImgAndCommen) 
+}
 
   return (
     <div className="App">
-     <img className="logo" src="assets/hoxtagram-logo.png" />
-    <section className="image-container">
-      {imgAndCommen.map(image => (
-        <article className="image-card">
-        <h2 className="title">{image.title}</h2>
-        <img src={image.image} className="image" />
-        <div className="likes-section">
-          <span className="likes">{image.likes}</span>
-          <button className="like-button" onClick={
-            ()=>incrementLike(image)}>♥</button>
-        </div>
-        <ul className="comments">
-         {image.comments.map(comment => (
-          <li className="comment"> {comment.content} </li>
-        ))}
-        </ul>
-      </article>
- 
-      ))}
-    
-</section>
+     <Header/>
+      <SingleCard
+      imgAndCommen={ imgAndCommen}
+      incrementLike={incrementLike}
+      />
     </div>
   )
 }
